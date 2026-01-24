@@ -4,6 +4,10 @@
 #include <iostream>
 #include <string>
 #include <ctype.h>
+#include <limits.h>
+#include <errno.h>
+#include <cstdlib>
+#include <cstring>
 
 class ScalarConverter
 {

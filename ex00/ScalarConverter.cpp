@@ -1,7 +1,5 @@
 #include "ScalarConverter.hpp"
 
-#include "ScalarConverter.hpp"
-
 ScalarConverter::ScalarConverter()
 {
 	std::cout << "ScalarConverter Constructor called \n";
@@ -29,27 +27,27 @@ void ScalarConverter::convert(const std::string &literal)
 {
 	if(literal == "nan" || literal == "nanf")
 	{
-		std::cout << "char: 	impossible\n";
-		std::cout << "int:		impossible\n";
-		std::cout << "float:	nanf\n";
-		std::cout << "double:	nan\n";
+		std::cout << "char: impossible\n";
+		std::cout << "int: impossible\n";
+		std::cout << "float: nanf\n";
+		std::cout << "double: nan\n";
 		return;
 	}
 
 	else if(literal == "+inf" || literal == "+inff")
 	{
-		std::cout << "char: 	impossible\n";
-		std::cout << "int:		impossible\n";
-		std::cout << "float:	+inff\n";
-		std::cout << "double:	+inf\n";
+		std::cout << "char: impossible\n";
+		std::cout << "int: impossible\n";
+		std::cout << "float: +inff\n";
+		std::cout << "double: +inf\n";
 		return;
 	}
 	else if(literal == "-inf" || literal == "-inff")
 	{
-		std::cout << "char: 	impossible\n";
-		std::cout << "int:		impossible\n";
-		std::cout << "float:	-inff\n";
-		std::cout << "double:	-inf\n";
+		std::cout << "char: impossible\n";
+		std::cout << "int: impossible\n";
+		std::cout << "float: -inff\n";
+		std::cout << "double: -inf\n";
 		return;
 	}
 	else if(literal.length() == 1 && !std::isdigit(literal[0]))
@@ -58,121 +56,48 @@ void ScalarConverter::convert(const std::string &literal)
 
 		std::cout << "char: '" << c << "'\n";
 		std::cout << "int : " <<static_cast<int>(c)<<"\n";
-		std::cout << "float : " <<static_cast<float>(c)<<"\n";
-		std::cout << "double : " <<static_cast<double>(c)<<"\n";
+		std::cout << "float : " <<static_cast<float>(c)<<".0f\n";
+		std::cout << "double : " <<static_cast<double>(c)<<".0\n";
 	}
-
-}
-
-static bool isInt(const std::string& literal)
-{
-	if(literal.empty())
-		return false;
-	int i = 0;
-	if(literal[i] == '+' || literal[i] == '-')
+	else if(isInt(literal))
 	{
-		i++;
-		if(i == literal.length())
-			return false;
-	}
-	int j = i;
-	while (j < literal.length())
-	{
-		if(!std::isdigit(literal[j]))
-			return false;
-		j++;
-	}
-	return true;
-}
-
-static bool isDouble(const std::string& literal)
-{
-	if (literal.empty())
-		return false;
-
-	int i = 0;
-	bool sawDot = false;
-	bool hasDigitBeforeDot = false;
-	bool hasDigitAfterDot = false;
-
-	if (literal[i] == '+' || literal[i] == '-')
-	{
-		i++;
-		if (i == literal.length())
-			return false;
-	}
-
-	int j = i;
-	while (j < literal.length())
-	{
-		if (std::isdigit(literal[j]))
+		errno = 0;
+		char *end;
+		long value = strtol(literal.c_str(), &end, 10);
+		if(value < INT_MIN || value > INT_MAX || *end != '\0' || errno == ERANGE)
 		{
-			if (sawDot == false)
-				hasDigitBeforeDot = true;
-			else
-				hasDigitAfterDot = true;
+			std::cout << "char: imppossible\n";
+			std::cout << "int: impossible\n";
+			std::cout << "float : " << static_cast<float>(value) <<".0f\n";
+			std::cout << "double : " << static_cast<double>(value)<<".0\n";
+			return;
 		}
-		else if (literal[j] == '.')
+		int intValue = value;
+
+		if(intValue < 0 || intValue > 127)
 		{
-			if (sawDot == true)
-				return false;
-			sawDot = true;
+			std::cout << "char: impossible\n";
+			std::cout << "int : "	 << static_cast<int>(value)<<"\n";
+			std::cout << "float : "	 << static_cast<float>(value) <<".0f\n";
+			std::cout << "double : " << static_cast<double>(value)<<".0\n";
+		}
+		else if(!std::isprint(intValue))
+		{
+			std::cout << "char: Non displayable\n";
+			std::cout << "int : "	 << static_cast<int>(value)<<"\n";
+			std::cout << "float : "	 << static_cast<float>(value) <<".0f\n";
+			std::cout << "double : " << static_cast<double>(value)<<".0\n";
 		}
 		else
 		{
-			return false;
+		std::cout << "char: '"	 << static_cast<char>(value) << "'\n";
+		std::cout << "int : "	 << static_cast<int>(value)<<"\n";
+		std::cout << "float : "	 << static_cast<float>(value) <<".0f\n";
+		std::cout << "double : " << static_cast<double>(value)<<".0\n";
+		return;
 		}
-		j++;
 	}
-
-	return (sawDot && hasDigitBeforeDot && hasDigitAfterDot);
+	else {
+		std::cout <<"xxxxxxxxxxxxxxxxxxxxxx\n";
+	}
 }
-
-static bool isFloat(const std::string& literal)
-{
-	if (literal.empty())
-		return false;
-
-	int i = 0;
-	bool sawDot = false;
-	bool hasDigitBeforeDot = false;
-	bool hasDigitAfterDot = false;
-	bool sawF = false;
-
-	if (literal[i] == '+' || literal[i] == '-')
-	{
-		i++;
-		if (i == literal.length())
-			return false;
-	}
-
-	int j = i;
-	while (j < literal.length())
-	{
-		if (std::isdigit(literal[j]))
-		{
-			if (sawDot == false)
-				hasDigitBeforeDot = true;
-			else
-				hasDigitAfterDot = true;
-		}
-		else if (literal[j] == '.')
-		{
-			if (sawDot == true)
-				return false;
-			sawDot = true;
-		}
-		else if (literal[j] == 'f' && j == literal.length()-1)
-		{
-			sawF = true;
-		}
-		else
-		{
-			return false;
-		}
-		j++;
-	}
-
-	return (sawDot && hasDigitBeforeDot && hasDigitAfterDot && sawF);
-}
-
