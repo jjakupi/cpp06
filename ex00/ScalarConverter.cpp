@@ -27,6 +27,10 @@ void ScalarConverter::convert(const std::string &literal)
 {
 	if(literal == "nan" || literal == "nanf")
 	{
+		if(literal == "nan")
+			std::cout << "\033[33mtype is:Double\n\033[0m";
+		if(literal == "nanf")
+			std::cout << "\033[33mtype is: Float\n\033[0m";
 		std::cout << "char: impossible\n";
 		std::cout << "int: impossible\n";
 		std::cout << "float: nanf\n";
@@ -34,16 +38,24 @@ void ScalarConverter::convert(const std::string &literal)
 		return;
 	}
 
-	else if(literal == "+inf" || literal == "+inff")
+	else if(literal == "+inf" || literal == "+inff" || literal == "inf" || literal == "inff")
 	{
+		if(literal == "+inf" || literal == "inf")
+			std::cout << "\033[33mtype is: Double\n\033[0m";
+		if(literal == "+inff" || literal == "inff")
+			std::cout << "\033[33mtype is: Float\n\033[0m";
 		std::cout << "char: impossible\n";
 		std::cout << "int: impossible\n";
-		std::cout << "float: +inff\n";
-		std::cout << "double: +inf\n";
+		std::cout << "float: inff\n";
+		std::cout << "double: inf\n";
 		return;
 	}
 	else if(literal == "-inf" || literal == "-inff")
 	{
+		if(literal == "-inf")
+			std::cout << "\033[33mtype is: Double\n\033[0m";
+		if(literal == "-inff")
+			std::cout << "\033[33mtype is: Float\n\033[0m";
 		std::cout << "char: impossible\n";
 		std::cout << "int: impossible\n";
 		std::cout << "float: -inff\n";
@@ -53,11 +65,12 @@ void ScalarConverter::convert(const std::string &literal)
 	else if(literal.length() == 1 && !std::isdigit(literal[0]))
 	{
 		char c = literal[0];
-
+		std::cout << "\033[33mtype is: Char\n\033[0m";
 		std::cout << "char: '" << c << "'\n";
 		std::cout << "int : " <<static_cast<int>(c)<<"\n";
 		std::cout << "float : " <<static_cast<float>(c)<<".0f\n";
 		std::cout << "double : " <<static_cast<double>(c)<<".0\n";
+		return;
 	}
 	else if(isInt(literal))
 	{
@@ -66,34 +79,39 @@ void ScalarConverter::convert(const std::string &literal)
 		long value = strtol(literal.c_str(), &end, 10);
 		if(value < INT_MIN || value > INT_MAX || *end != '\0' || errno == ERANGE)
 		{
-			std::cout << "char: imppossible\n";
+			std::cout << "\033[33mtype is out of range of Int but still can ba converted to float and double\n\033[0m";
+			std::cout << "char: impossible\n";
 			std::cout << "int: impossible\n";
-			std::cout << "float : " << static_cast<float>(value) <<".0f\n";
-			std::cout << "double : " << static_cast<double>(value)<<".0\n";
+			std::cout << std::fixed << std::setprecision(1);
+			std::cout << "float : " << static_cast<float>(value) <<"0f\n";
+			std::cout << "double : " << static_cast<double>(value)<<"0\n";
 			return;
 		}
 		int intValue = value;
-
+		std::cout << "\033[33mtype is: Integere\n\033[0m";
 		if(intValue < 0 || intValue > 127)
 		{
 			std::cout << "char: impossible\n";
 			std::cout << "int : "	 << static_cast<int>(intValue)<<"\n";
-			std::cout << "float : "	 << static_cast<float>(intValue) <<".0f\n";
-			std::cout << "double : " << static_cast<double>(intValue)<<".0\n";
+			std::cout << std::fixed << std::setprecision(1);
+			std::cout << "float : "	 << static_cast<float>(intValue) <<"0f\n";
+			std::cout << "double : " << static_cast<double>(intValue)<<"0\n";
 		}
 		else if(!std::isprint(intValue))
 		{
 			std::cout << "char: Non displayable\n";
 			std::cout << "int : "	 << static_cast<int>(intValue)<<"\n";
-			std::cout << "float : "	 << static_cast<float>(intValue) <<".0f\n";
-			std::cout << "double : " << static_cast<double>(intValue)<<".0\n";
+			std::cout << std::fixed << std::setprecision(1);
+			std::cout << "float : "	 << static_cast<float>(intValue) <<"0f\n";
+			std::cout << "double : " << static_cast<double>(intValue)<<"0\n";
 		}
 		else
 		{
 		std::cout << "char: '"	 << static_cast<char>(intValue) << "'\n";
 		std::cout << "int : "	 << static_cast<int>(intValue)<<"\n";
-		std::cout << "float : "	 << static_cast<float>(intValue) <<".0f\n";
-		std::cout << "double : " << static_cast<double>(intValue)<<".0\n";
+		std::cout << std::fixed << std::setprecision(1);
+		std::cout << "float : "	 << static_cast<float>(intValue) <<"0f\n";
+		std::cout << "double : " << static_cast<double>(intValue)<<"0\n";
 		return;
 		}
 	}
@@ -104,49 +122,122 @@ void ScalarConverter::convert(const std::string &literal)
 		double value = strtod(literal.c_str(), &end);
 		if(*end != '\0' || errno == ERANGE)
 		{
-			std::cout << "char: imppossible\n";
+			std::cout << "char: impossible\n";
 			std::cout << "int: impossible\n";
 			std::cout << "float : impossible\n";
 			std::cout << "double : impossible\n";
 			return;
 		}
-		if(literal[literal.length()-1]== '0' && literal[literal.length()-2] == '.')
+		std::cout << "\033[33mtype is: Double\n\033[0m";
+		double intPart = std::floor(value);
+		if (value == intPart) // <-- zëvendëson kontrollin ".0"
 		{
-			if(value < INT_MIN || value > INT_MAX)
-			{
-				std::cout << "char: impossible\n";
-				std::cout << "int : impossible\n";
-				std::cout << "float : "	 << static_cast<float>(value) <<"\n";
-				std::cout << "double : " << static_cast<double>(value)<<"\n";
-				return;
-			}
-			if(value < 0 || value > 127)
-			{
-				std::cout << "char: impossible\n";
-				std::cout << "int : "	 << static_cast<int>(value)<<"\n";
-				std::cout << "float : "	 << static_cast<float>(value) <<"\n";
-				std::cout << "double : " << static_cast<double>(value)<<"\n";
-				return;
-			}
-			if(!std::isprint(value))
-			{
-				std::cout << "char: Non displayable\n";
-				std::cout << "int : "	 << static_cast<int>(value)<<"\n";
-				std::cout << "float : "	 << static_cast<float>(value) <<"\n";
-				std::cout << "double : " << static_cast<double>(value)<<"\n";
-				return;
-			}
+		if(value < INT_MIN || value > INT_MAX)
+		{
+			std::cout << "char: impossible\n";
+			std::cout << "int : impossible\n";
+			std::cout << std::fixed << std::setprecision(1);
+			std::cout << "float : "  << static_cast<float>(value)  << "0f\n";
+			std::cout << "double : " << value << "0\n";
+			return;
+		}
+
+		int intValue = static_cast<int>(value);
+
+		if(intValue < 0 || intValue > 127)
+		{
+			std::cout << "char: impossible\n";
+			std::cout << "int : "   << intValue << "\n";
+			std::cout << std::fixed << std::setprecision(1);
+			std::cout << "float : " << static_cast<float>(value) << "0f\n";
+			std::cout << "double : " << value << "0\n";
+			return;
+		}
+
+		if(!std::isprint(static_cast<unsigned char>(intValue))) // <-- fix i 2-të
+		{
+			std::cout << "char: Non displayable\n";
+			std::cout << "int : "   << intValue << "\n";
+			std::cout << std::fixed << std::setprecision(1);
+			std::cout << "float : " << static_cast<float>(value) << "0f\n";
+			std::cout << "double : " << value << "0\n";
+			return;
+		}
+		// këtu mund të printosh char normal nëse do (ti nuk e kishe fare në këtë degë)
+		std::cout << "char: '" << static_cast<char>(intValue) << "'\n";
+		std::cout << "int : "   << intValue << "\n";
+		std::cout << std::fixed << std::setprecision(1);
+		std::cout << "float : " << static_cast<float>(value) << "0f\n";
+		std::cout << "double : " << value << "0\n";
+		return;
+		}
+	}
+	else if(isFloat(literal))
+	{
+		errno = 0;
+		char *end;
+		float value = strtof(literal.c_str(), &end);
+		if(*end != 'f' || errno == ERANGE)
+		{
+			std::cout << "char: impossible\n";
+			std::cout << "int: impossible\n";
+			std::cout << "float : impossible\n";
+			std::cout << "double : impossible\n";
+			return;
+		}
+		std::cout << "\033[33mtype is: Float\n\033[0m";
+		float intPart = std::floor(value);
+		if (value == intPart) // <-- zëvendëson kontrollin ".0"
+		{
+		if(value < INT_MIN || value > INT_MAX)
+		{
+			std::cout << "char: impossible\n";
+			std::cout << "int : impossible\n";
+			std::cout << std::fixed << std::setprecision(1);
+			std::cout << "float : "  << value << "0f\n";
+			std::cout << "double : " << static_cast<double>(value)  << "0\n";
+			return;
+		}
+
+		int intValue = static_cast<int>(value);
+		if(intValue < 0 || intValue > 127)
+		{
+			std::cout << "char: impossible\n";
+			std::cout << "int : "   << intValue << "\n";
+			std::cout << std::fixed << std::setprecision(1);
+			std::cout << "float : " << value << "0f\n";
+			std::cout << "double : " << static_cast<double>(value) << "0\n";
+			return;
+		}
+
+		if(!std::isprint(static_cast<unsigned char>(intValue))) // <-- fix i 2-të
+		{
+			std::cout << "char: Non displayable\n";
+			std::cout << "int : "   << intValue << "\n";
+			std::cout << std::fixed << std::setprecision(1);
+			std::cout << "float : " << value << "0f\n";
+			std::cout << "double : " << static_cast<double>(value) << "0\n";
+			return;
+		}
+		// këtu mund të printosh char normal nëse do (ti nuk e kishe fare në këtë degë)
+		std::cout << "char: '" << static_cast<char>(intValue) << "'\n";
+		std::cout << "int : "   << intValue << "\n";
+		std::cout << std::fixed << std::setprecision(1);
+		std::cout << "float : " << value << "0f\n";
+		std::cout << "double : " << static_cast<double>(value)<< "0\n";
+		return;
 		}
 		else
 		{
 			std::cout << "char: impossible\n";
 			std::cout << "int : impossible\n";
-			std::cout << "float : "	 << static_cast<float>(value) <<"\n";
-			std::cout << "double : " << static_cast<double>(value)<<"\n";
+			std::cout << std::fixed << std::setprecision(1);
+			std::cout << "float : "  << value << "0f\n";
+			std::cout << "double : " << static_cast<double>(value) << "0\n";
 			return;
 		}
 	}
 	else {
-		std::cout <<"xxxxxxxxxxxxxxxxxxxxxx\n";
+		std::cout << "Invalid entry. Try again.\n";
 	}
 }

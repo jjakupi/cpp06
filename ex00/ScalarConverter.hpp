@@ -8,6 +8,8 @@
 #include <errno.h>
 #include <cstdlib>
 #include <cstring>
+#include <cmath>
+#include <iomanip>
 
 class ScalarConverter
 {
