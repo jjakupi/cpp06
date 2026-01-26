@@ -19,7 +19,7 @@ int main()
 	if (original == restored)
 		std::cout << "✅ Same address!\n";
 	else
-		std::cout << "❌ Different address!\n";
+		std::cout << "Different address!\n";
 
 	std::cout << "\nraw (dec): " << raw << "\n";
 	std::cout << "raw (hex): 0x" << std::hex << raw << std::dec << "\n";
