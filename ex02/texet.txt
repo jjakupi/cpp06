@@ -10,3 +10,13 @@ Pse mjafton vetëm destructor virtual? Sepse: destructori është funksion qe b�
 
 dynamic_cast funksionon vetëm në klasa polimorfike
 Një klasë është polimorfike vetëm nëse ka të paktën një funksion virtual
+
+dynamic_cast përdoret kur kemi një hierarki polimorfike dhe duhet të identifikojmë tipin real të një objekti në runtime përmes një pointer ose reference të klasës bazë,
+zakonisht kur tipi konkret nuk dihet paraprakisht dhe nuk ka alternativë më të mirë si virtual functions.
+
+Jo. Pa dynamic_cast ose typeid nuk ka mënyrë të sigurt për të identifikuar tipin real të një objekti përmes një Base* ose Base&.
+Alternativat si variabla tip ose metoda virtuale do të ndryshonin dizajnin dhe do të shmangnin qëllimin e ushtrimit, që është përdorimi i RTTI.
+
+
+
+

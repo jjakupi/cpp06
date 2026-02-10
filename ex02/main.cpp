@@ -45,14 +45,15 @@ int main()
 	for (int k = 0; k < 10; ++k)
 	{
 		Base* ptr = generate();
+
 		std::cout << "identify(ptr): ";
 		identify(ptr);
 
 		std::cout << "identify(*ptr): ";
 		identify(*ptr);
 
-		std::cout << "----\n";
 		delete ptr;
+		std::cout << "----\n";
 	}
 	return 0;
 }

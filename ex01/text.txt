@@ -2,21 +2,31 @@ uintptr_t është një tip integer i garantuar që mund të mbajë një adresë 
 Ne e përdorim për të treguar që një pointer është thjesht një adresë në memory dhe që mund të konvertohet në një vlerë numerike dhe të rikthehet sërish në
 pointer duke përdorur reinterpret_cast.
 
-
 API pranon vetëm numra
 ti ke adresë
 
 Pointer NUK është gjithmonë i mirëpritur.
 Ka shumë situata ku:
-
-❌ nuk lejohet Data*
-
-❌ nuk dihet tipi
-
-❌ API pranon vetëm void* ose integer
-
-❌ duhet ruajtur / kaluar përkohësisht
+ nuk lejohet Data*
+nuk dihet tipi
+API pranon vetëm void* ose integer
+duhet ruajtur / kaluar përkohësisht
 
 Ne e kthejmë pointer-in në uintptr_t jo për të ndryshuar vlerën,
 por për ta shkëputur nga tipi i tij dhe për ta trajtuar si një vlerë neutrale që mund të ruhet,
 kalohet ose interpretohet nga sisteme që nuk e njohin tipin e objektit.
+
+serialize = reinterpretim i adresës në një numër
+
+deserialize = rikthim i atij numri në pointer
+
+static:
+
+NUK i përket objektit
+
+I përket klasës
+
+NUK ka this
+ NUK ka access në anëtarë jo-statikë
+
+At its core, std::uintptr_t is a versatile unsigned integer type designed to store the entire address range of any object in C++, ensuring portability and precision
