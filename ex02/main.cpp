@@ -28,6 +28,8 @@ void identify(Base* p)
 
 void identify(Base& p)
 {
+	//If you do not know the throw type used in the try block, you can use the "three dots" syntax (...) inside the catch block,
+	//which will handle any type of exception:
 	try { (void)dynamic_cast<A&>(p); std::cout << "A\n"; return; }
 	catch (...) {}
 
