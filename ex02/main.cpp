@@ -32,22 +32,11 @@ void identify(Base& p)
 	//If you do not know the throw type used in the try block, you can use the "three dots" syntax (...) inside the catch block,
 	//which will handle any type of exception:
 	try { (void)dynamic_cast<A&>(p); std::cout << "A\n"; return; }
-	catch (const std::exception& e)
-	{
- 	   std::cout << "exception: " << e.what() << std::endl;
-	}
+	catch (...){}
 	try { (void)dynamic_cast<B&>(p); std::cout << "B\n"; return; }
-	catch (const std::exception& e)
-	{
-    	std::cout << "exception: " << e.what() << std::endl;
-	}
-
-
+	catch (...){}
 	try { (void)dynamic_cast<C&>(p); std::cout << "C\n"; return; }
-	catch (const std::exception& e)
-	{
-    	std::cout << "exception: " << e.what() << std::endl;
-	}
+	catch (...){}
 
 	std::cout << "Unknown\n";
 }
