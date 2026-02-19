@@ -132,7 +132,7 @@ void ScalarConverter::convert(const std::string &literal)
 		double intPart = std::floor(value);
 		if (value == intPart) // <-- zëvendëson kontrollin ".0"
 		{
-		if(value < INT_MIN || value > INT_MAX)
+	if(value < static_cast<double>(INT_MIN) || value > static_cast<double>(INT_MAX))
 		{
 			std::cout << "char: impossible\n";
 			std::cout << "int : impossible\n";
@@ -189,7 +189,7 @@ void ScalarConverter::convert(const std::string &literal)
 		float intPart = std::floor(value);
 		if (value == intPart) // <-- zëvendëson kontrollin ".0"
 		{
-		if(value < INT_MIN || value > INT_MAX)
+	if(value < static_cast<float>(INT_MIN) || value > static_cast<float>(INT_MAX))
 		{
 			std::cout << "char: impossible\n";
 			std::cout << "int : impossible\n";
