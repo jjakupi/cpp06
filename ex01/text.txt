@@ -1,32 +1,98 @@
 uintptr_t është një tip integer i garantuar që mund të mbajë një adresë pointer-i pa humbje informacioni.
-Ne e përdorim për të treguar që një pointer është thjesht një adresë në memory dhe që mund të konvertohet në një vlerë numerike dhe të rikthehet sërish në
-pointer duke përdorur reinterpret_cast.
+
+uintptr_t is an unsigned integer type guaranteed to be able to store a pointer address without losing information.
+
+Në thelb, ai përfaqëson një adresë memorieje si numër.
+At its core, std::uintptr_t is designed to store the full address range of any object in C++, ensuring portability and precision.
+
+Pse na duhet uintptr_t
+
+Pointer është thjesht një adresë në memory.
+
+Ne e përdorim uintptr_t për të treguar që një pointer mund të konvertohet në një vlerë numerike dhe pastaj të rikthehet përsëri në pointer duke përdorur reinterpret_cast.
+
+Pra:
+
+pointer → numër → pointer
+
+Ne nuk po ndryshojmë objektin, vetëm mënyrën si e shohim adresën.
+
+Problemi që zgjidh
+
+Ka shumë situata ku pointer nuk është i pranueshëm:
 
 API pranon vetëm numra
+
+nuk dihet tipi i objektit
+
+lejohet vetëm void* ose integer
+
+duhet ruajtur përkohësisht
+
+duhet kaluar midis sistemeve që nuk e njohin klasën
+
+Pra:
+
+API pranon numër
 ti ke adresë
 
-Pointer NUK është gjithmonë i mirëpritur.
-Ka shumë situata ku:
- nuk lejohet Data*
-nuk dihet tipi
-API pranon vetëm void* ose integer
-duhet ruajtur / kaluar përkohësisht
+uintptr_t bëhet forma neutrale e adresës.
 
-Ne e kthejmë pointer-in në uintptr_t jo për të ndryshuar vlerën,
-por për ta shkëputur nga tipi i tij dhe për ta trajtuar si një vlerë neutrale që mund të ruhet,
-kalohet ose interpretohet nga sisteme që nuk e njohin tipin e objektit.
+Ne e kthejmë pointer-in në uintptr_t jo për të ndryshuar vlerën, por për ta shkëputur nga tipi i tij dhe për ta trajtuar si një vlerë neutrale që mund të ruhet, kalohet ose interpretohet nga sisteme që nuk e njohin tipin e objektit.
 
-serialize = reinterpretim i adresës në një numër
+serialize & deserialize
 
-deserialize = rikthim i atij numri në pointer
+serialize = reinterpretim i adresës së pointer-it në një numër.
 
-static:
+deserialize = rikthim i atij numri përsëri në pointer.
 
-NUK i përket objektit
+Shembulli logjik:
 
-I përket klasës
+Data* ptr  →  uintptr_t raw  →  Data* ptr
 
-NUK ka this
- NUK ka access në anëtarë jo-statikë
 
-At its core, std::uintptr_t is a versatile unsigned integer type designed to store the entire address range of any object in C++, ensuring portability and precision
+Objekti në memorie nuk ndryshon.
+Ne vetëm ruajmë dhe rikthejmë adresën.
+
+Kjo bëhet me:
+
+reinterpret_cast
+
+
+Sepse nuk po bëjmë konvertim logjik të tipit, vetëm reinterpretim të bitëve të adresës.
+
+Pse përdorim reinterpret_cast
+
+reinterpret_cast përdoret kur duam ta trajtojmë një adresë si një tip tjetër pa ndryshuar vlerën në memorie.
+
+Ne nuk po konvertojmë objektin,
+po konvertojmë mënyrën si e lexojmë adresën.
+
+Static functions
+
+Funksionet serialize dhe deserialize janë static.
+
+Kjo do të thotë:
+
+Nuk i përkasin një objekti, por klasës.
+
+nuk kanë this
+
+nuk kanë akses në anëtarë jo-statikë
+
+mund të thirren pa krijuar objekt
+
+Pra përdoren si utility functions.
+
+Ideja kryesore
+
+Pointer është një adresë.
+uintptr_t është mënyra standarde për ta ruajtur atë adresë si numër pa humbje informacioni.
+
+Ne nuk po serializojmë të dhënat e objektit.
+Ne po serializojmë vetëm adresën e tij.
+
+serialize = ruaj adresën si numër
+deserialize = kthe numrin në adresë
+
+Objekti mbetet i njëjtë në memorie gjatë gjithë kohës.

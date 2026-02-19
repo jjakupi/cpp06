@@ -1,0 +1,125 @@
+dynamic_cast përdoret për të identifikuar tipin real të një objekti në runtime kur ai aksesohet përmes një pointer ose reference të klasës bazë.
+
+dynamic_cast is used to determine the real (dynamic) type of an object at runtime when accessed through a base class pointer or reference.
+
+Ai bën një konvertim të sigurt (safe cast), ndryshe nga static_cast, sepse kontrollon nëse objekti është vërtet i atij tipi.
+
+Kur funksionon dynamic_cast
+
+dynamic_cast funksionon vetëm në hierarki polimorfike.
+
+Një klasë është polimorfike vetëm nëse ka të paktën një funksion virtual.
+Edhe vetëm një destructor virtual mjafton:
+
+virtual ~Base();
+
+
+Pse?
+Sepse një funksion virtual krijon vtable dhe aktivizon RTTI (Run Time Type Information). Pa këtë, dynamic_cast nuk funksionon.
+
+RTTI
+
+dynamic_cast përdor RTTI (Run Time Type Information).
+
+Ti nuk e sheh throw, sepse ndodh brenda runtime-it të C++.
+The exception is thrown by the C++ runtime system, not by your code.
+
+Sjellja e dynamic_cast
+
+Kur përdorim pointer:
+
+dynamic_cast<Type*>(pointer)
+
+
+Nëse cast-i dështon, kthehet nullptr. Nuk hidhet exception.
+Pointer mund të jetë i pavlefshëm pa e prishur programin.
+
+Kur përdorim reference:
+
+dynamic_cast<Type&>(reference)
+
+
+Nëse cast-i dështon, hidhet std::bad_cast.
+Kjo ndodh sepse reference nuk mund të jetë null.
+
+Pra pointer → kthen nullptr
+reference → hedh exception
+
+Pse te Base* p nuk hidhet asgjë
+
+Kur kemi:
+
+Base* p;
+dynamic_cast<Derived*>(p);
+
+Nuk hidhet exception sepse pointer lejohet të jetë nullptr.
+Prandaj C++ zgjedh të kthejë nullptr në vend që të bëjë throw.
+
+catch(...)
+
+catch(...) do të thotë: kap çdo exception që hidhet, pa marrë parasysh tipin.
+
+catch(...) catches any exception regardless of its type.
+
+Në C++ çdo gjë mund të hidhet me throw. Nuk është si Java që hidhen vetëm Exception objects.
+
+Shembuj:
+
+throw 5;
+throw 3.14;
+throw 'a';
+throw "gabim";
+throw std::string("oops");
+throw std::runtime_error("boom");
+throw MyClass();
+
+
+Tipi i exception është tipi i objektit që hidhet.
+
+dynamic_cast me reference
+
+dynamic_cast me reference hedh vetëm një exception:
+
+std::bad_cast
+
+
+Por në CPP06 nuk përdorim <typeinfo>, prandaj nuk kapim std::bad_cast direkt.
+Për këtë arsye përdorim:
+
+catch(...)
+
+Pointer vs Reference në main
+
+Në main kemi:
+
+Base* ptr = generate();
+
+identify(ptr);
+identify(*ptr);
+
+
+ptr është adresë (pointer).
+*ptr është objekti në atë adresë.
+
+Operatori * quhet dereference operator. Ai të jep vetë objektin, jo adresën.
+
+Pra:
+
+ptr → ku ndodhet objekti
+*ptr → objekti vetë
+
+Kur kalojmë një objekt ekzistues pa kopjim në një funksion, C++ e trajton si reference. Prandaj *ptr bëhet Base&.
+
+Kur përdoret dynamic_cast
+
+Përdoret kur kemi një hierarki polimorfike dhe nuk e dimë tipin konkret të objektit në runtime.
+Zakonisht përdoret për identifikim ose konvertim të sigurt.
+
+Megjithatë, në dizajn të mirë OOP zakonisht shmanget dhe preferohet polymorphism-i (virtual functions) për sjellje.
+
+A mund ta identifikojmë tipin pa dynamic_cast?
+
+Jo.
+Pa dynamic_cast ose typeid nuk ka mënyrë të sigurt për të identifikuar tipin real të një objekti përmes Base* ose Base&.
+
+Alternativat si variabla tipi ose metoda virtuale do të ndryshonin dizajnin dhe do të shmangnin qëllimin e ushtrimit, që është përdorimi i RTTI.
